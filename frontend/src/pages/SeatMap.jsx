@@ -5,11 +5,13 @@ import { useAuth } from "../context/AuthContext";
 
 /* ─── Payment Modal ─────────────────────────────────────── */
 /* ─── Payment Modal ─────────────────────────────────────── */
-function PaymentModal({ train, seatCount, onClose, onSuccess }) {
+/* ─── Payment Modal ─────────────────────────────────────── */
+function PaymentModal({ train, selectedSeats, onClose, onSuccess }) {
   const [card, setCard] = useState({ number: "", name: "", expiry: "", cvv: "" });
   const [errors, setErrors] = useState({});
-  const [step, setStep] = useState("form"); // "form" | "processing" | "done"
+  const [step, setStep] = useState("form");
 
+  const seatCount = selectedSeats.length;
   const unitPrice = train?.price_per_seat || 500;
   const subtotal = unitPrice * seatCount;
   const convenience = Math.round(subtotal * 0.02);
@@ -53,12 +55,11 @@ function PaymentModal({ train, seatCount, onClose, onSuccess }) {
         onClick={e => e.stopPropagation()}
         style={{ background: "#fff", border: "1px solid #e2e2e2", borderRadius: 16, width: "100%", maxWidth: 460, boxShadow: "0 12px 48px rgba(0,0,0,0.15)", overflow: "hidden" }}
       >
-        {/* Header */}
         <div style={{ background: "#0a0a0a", padding: "20px 24px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
           <div>
             <p style={{ fontFamily: "Space Grotesk, sans-serif", fontSize: "0.65rem", fontWeight: 600, letterSpacing: "0.12em", textTransform: "uppercase", color: "rgba(255,255,255,0.45)", marginBottom: 3 }}>Secure Payment</p>
             <h2 style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 700, fontSize: "1.05rem", color: "#fff" }}>{train?.train_name}</h2>
-            <p style={{ fontFamily: "Inter, sans-serif", fontSize: "0.78rem", color: "rgba(255,255,255,0.5)", marginTop: 2 }}>Booking {seatCount} Seat{seatCount > 1 ? 's' : ''}</p>
+            <p style={{ fontFamily: "Inter, sans-serif", fontSize: "0.78rem", color: "rgba(255,255,255,0.5)", marginTop: 2 }}>Confirming Seats: {selectedSeats.join(", ")}</p>
           </div>
           <button onClick={onClose} style={{ background: "rgba(255,255,255,0.1)", border: "none", color: "#fff", width: 30, height: 30, borderRadius: "50%", cursor: "pointer", fontSize: "1rem", display: "flex", alignItems: "center", justifyContent: "center" }}>×</button>
         </div>
@@ -68,7 +69,7 @@ function PaymentModal({ train, seatCount, onClose, onSuccess }) {
             <div style={{ textAlign: "center", padding: "40px 0" }}>
               <div style={{ display: "inline-block", width: 44, height: 44, border: "3px solid #0a0a0a", borderTopColor: "transparent", borderRadius: "50%", animation: "spin 0.7s linear infinite", marginBottom: 16 }} />
               <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 600, fontSize: "0.95rem", color: "#0a0a0a" }}>Processing Payment…</p>
-              <p style={{ fontFamily: "Inter, sans-serif", fontSize: "0.8rem", color: "#6b6b6b", marginTop: 6 }}>Finalizing booking for {seatCount} passengers</p>
+              <p style={{ fontFamily: "Inter, sans-serif", fontSize: "0.8rem", color: "#6b6b6b", marginTop: 6 }}>Finalizing booking for {seatCount} seats</p>
             </div>
           )}
 
@@ -76,7 +77,7 @@ function PaymentModal({ train, seatCount, onClose, onSuccess }) {
             <div style={{ textAlign: "center", padding: "40px 0" }}>
               <div style={{ width: 56, height: 56, background: "#0a0a0a", borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 16px", fontSize: "1.5rem", color: "#fff" }}>✓</div>
               <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 700, fontSize: "1rem", color: "#0a0a0a" }}>Payment Confirmed!</p>
-              <p style={{ fontFamily: "Inter, sans-serif", fontSize: "0.8rem", color: "#6b6b6b", marginTop: 6 }}>Issuing your tickets…</p>
+              <p style={{ fontFamily: "Inter, sans-serif", fontSize: "0.8rem", color: "#6b6b6b", marginTop: 6 }}>Your seats are being locked…</p>
             </div>
           )}
 
@@ -102,23 +103,15 @@ function PaymentModal({ train, seatCount, onClose, onSuccess }) {
                 <div>
                   <label className="label">Card Number</label>
                   <input className="input" name="number" placeholder="1234 5678 9012 3456" value={card.number} onChange={fmt} style={{ fontFamily: "Inter, sans-serif", letterSpacing: "0.08em" }} />
-                  {errors.number && <p style={{ fontFamily: "Inter, sans-serif", fontSize: "0.75rem", color: "#c0392b", marginTop: 4 }}>{errors.number}</p>}
-                </div>
-                <div>
-                  <label className="label">Cardholder Name</label>
-                  <input className="input" name="name" placeholder="John Doe" value={card.name} onChange={fmt} />
-                  {errors.name && <p style={{ fontFamily: "Inter, sans-serif", fontSize: "0.75rem", color: "#c0392b", marginTop: 4 }}>{errors.name}</p>}
                 </div>
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
                   <div>
-                    <label className="label">Expiry Date</label>
+                    <label className="label">Expiry</label>
                     <input className="input" name="expiry" placeholder="MM/YY" value={card.expiry} onChange={fmt} />
-                    {errors.expiry && <p style={{ fontFamily: "Inter, sans-serif", fontSize: "0.75rem", color: "#c0392b", marginTop: 4 }}>{errors.expiry}</p>}
                   </div>
                   <div>
                     <label className="label">CVV</label>
                     <input className="input" name="cvv" placeholder="•••" type="password" value={card.cvv} onChange={fmt} />
-                    {errors.cvv && <p style={{ fontFamily: "Inter, sans-serif", fontSize: "0.75rem", color: "#c0392b", marginTop: 4 }}>{errors.cvv}</p>}
                   </div>
                 </div>
               </div>
@@ -147,7 +140,7 @@ export default function SeatMap() {
   const [result, setResult] = useState(null);
   const [error, setError] = useState("");
   const [showPayment, setShowPayment] = useState(false);
-  const [seatCount, setSeatCount] = useState(1);
+  const [selectedSeats, setSelectedSeats] = useState([]);
 
   const fetchTrain = async () => {
     try {
@@ -165,8 +158,18 @@ export default function SeatMap() {
     fetchTrain();
   }, [id]);
 
+  const toggleSeat = (seat) => {
+    if (seat.status !== "available" && seat.status !== "open") return;
+    setSelectedSeats(prev => 
+      prev.includes(seat.seat_number) 
+        ? prev.filter(s => s !== seat.seat_number)
+        : [...prev, seat.seat_number]
+    );
+  };
+
   const handleBookClick = () => {
     if (!user) { openAuthModal("login"); return; }
+    if (selectedSeats.length === 0) { setError("Please select at least one seat."); return; }
     setShowPayment(true);
   };
 
@@ -176,8 +179,9 @@ export default function SeatMap() {
     setError("");
     setResult(null);
     try {
-      const res = await bookTicket(user._id, train._id, seatCount);
+      const res = await bookTicket(user._id, train._id, selectedSeats);
       setResult(res.data);
+      setSelectedSeats([]);
       fetchTrain();
     } catch (err) {
       setError(err.response?.data?.error || "Booking failed.");
@@ -187,151 +191,128 @@ export default function SeatMap() {
   };
 
   const availableCount = train?.seats?.filter(s => s.status === "available" || s.status === "open").length ?? 0;
+  const unitPrice = train?.price_per_seat || 500;
+  const subtotal = unitPrice * selectedSeats.length;
+  const totalPrice = subtotal + Math.round(subtotal * 0.02);
 
   if (loading) return (
     <div style={{ minHeight: "calc(100vh - 57px)", display: "flex", alignItems: "center", justifyContent: "center" }}>
       <div style={{ textAlign: "center" }}>
-        <div style={{ display: "inline-block", width: 36, height: 36, border: "2px solid #0a0a0a", borderTopColor: "transparent", borderRadius: "50%", animation: "spin 0.7s linear infinite" }} />
+        <div className="spinner" />
         <p style={{ fontFamily: "Space Grotesk, sans-serif", fontSize: "0.8rem", color: "#a0a0a0", letterSpacing: "0.1em", marginTop: 14 }}>Loading seat map…</p>
       </div>
-      <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
     </div>
   );
-
-  const unitPrice = train?.price_per_seat || 500;
-  const totalPrice = (unitPrice * seatCount) + Math.round((unitPrice * seatCount) * 0.02);
 
   return (
     <div style={{ minHeight: "calc(100vh - 57px)", background: "#fafafa" }}>
       {showPayment && (
         <PaymentModal
           train={train}
-          seatCount={seatCount}
+          selectedSeats={selectedSeats}
           onClose={() => setShowPayment(false)}
           onSuccess={handlePaymentSuccess}
         />
       )}
 
       <div style={{ maxWidth: 860, margin: "0 auto", padding: "40px 16px" }}>
-        {/* Back */}
-        <button
-          onClick={() => navigate("/trains")}
-          style={{ fontFamily: "Inter, sans-serif", fontSize: "0.85rem", color: "#6b6b6b", background: "none", border: "none", cursor: "pointer", marginBottom: 24, display: "flex", alignItems: "center", gap: 6 }}
-        >← Back to trains</button>
+        <button onClick={() => navigate("/trains")} className="btn-text">← Back to trains</button>
 
-        {/* Train info card */}
         <div style={{ background: "#0a0a0a", borderRadius: 14, padding: "28px", marginBottom: 20, color: "#fff" }}>
           <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", alignItems: "flex-start", gap: 16 }}>
             <div>
               <p style={{ fontFamily: "Space Grotesk, sans-serif", fontSize: "0.7rem", fontWeight: 600, letterSpacing: "0.12em", textTransform: "uppercase", color: "rgba(255,255,255,0.45)", marginBottom: 6 }}>Train #{train?.train_number}</p>
               <h1 style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 700, fontSize: "1.4rem", color: "#fff", marginBottom: 12 }}>{train?.train_name}</h1>
-              <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                <span style={{ fontFamily: "Inter, sans-serif", fontWeight: 500, fontSize: "0.9rem", color: "rgba(255,255,255,0.85)" }}>{train?.from_station}</span>
-                <span style={{ color: "rgba(255,255,255,0.35)" }}>→</span>
-                <span style={{ fontFamily: "Inter, sans-serif", fontWeight: 500, fontSize: "0.9rem", color: "rgba(255,255,255,0.85)" }}>{train?.to_station}</span>
-              </div>
+              <p style={{ fontFamily: "Inter, sans-serif", fontSize: "0.9rem", color: "rgba(255,255,255,0.85)" }}>{train?.from_station} → {train?.to_station}</p>
             </div>
-            <div style={{ display: "flex", gap: 12 }}>
-              <div style={{ textAlign: "center", background: "rgba(255,255,255,0.08)", borderRadius: 10, padding: "16px 20px" }}>
-                <div style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 700, fontSize: "2rem", color: availableCount > 0 ? "#fff" : "rgba(255,255,255,0.35)", lineHeight: 1 }}>{availableCount}</div>
-                <div style={{ fontFamily: "Space Grotesk, sans-serif", fontSize: "0.6rem", fontWeight: 600, letterSpacing: "0.1em", textTransform: "uppercase", color: "rgba(255,255,255,0.4)", marginTop: 5 }}>seats free</div>
-              </div>
+            <div style={{ textAlign: "center", background: "rgba(255,255,255,0.08)", borderRadius: 10, padding: "16px 20px" }}>
+              <div style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 700, fontSize: "2rem", color: "#fff", lineHeight: 1 }}>{availableCount}</div>
+              <div style={{ fontFamily: "Space Grotesk, sans-serif", fontSize: "0.6rem", fontWeight: 600, letterSpacing: "0.1em", textTransform: "uppercase", color: "rgba(255,255,255,0.4)", marginTop: 5 }}>Available</div>
             </div>
           </div>
         </div>
 
-        {/* Booking result */}
         {result && (
           <div style={{ background: "#fff", border: "1px solid #e2e2e2", borderRadius: 10, padding: "16px 20px", marginBottom: 16, display: "flex", alignItems: "center", gap: 16 }}>
-            <div style={{ width: 36, height: 36, borderRadius: "50%", background: "#0a0a0a", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, fontSize: "1rem", color: "#fff" }}>✓</div>
+            <div className="success-icon">✓</div>
             <div style={{ flex: 1 }}>
-              <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 600, fontSize: "0.875rem", color: "#0a0a0a", marginBottom: 2 }}>
-                {seatCount} seat{seatCount > 1 ? 's' : ''} booked successfully!
-              </p>
-              <p style={{ fontFamily: "Inter, sans-serif", fontSize: "0.8rem", color: "#6b6b6b" }}>
-                Seats: {result.tickets.map(t => `#${t.seat_number} (${t.berth_type[0]})`).join(", ")}
-              </p>
+              <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 600, fontSize: "0.875rem", color: "#0a0a0a", marginBottom: 2 }}>{result.tickets.length} seats booked successfully!</p>
+              <p style={{ fontFamily: "Inter, sans-serif", fontSize: "0.8rem", color: "#6b6b6b" }}>Check your dashboard for details.</p>
             </div>
-            <button onClick={() => navigate("/dashboard")} className="btn btn-outline" style={{ fontSize: "0.75rem", padding: "0.45rem 1rem" }}>View Dashboard</button>
+            <button onClick={() => navigate("/dashboard")} className="btn btn-outline" style={{ fontSize: "0.75rem" }}>Dashboard</button>
           </div>
         )}
 
-        {/* Error */}
-        {error && (
-          <div style={{ background: "#fef2f2", border: "1px solid #fee2e2", borderRadius: 8, padding: "12px 16px", marginBottom: 16 }}>
-            <p style={{ fontFamily: "Inter, sans-serif", fontSize: "0.85rem", color: "#991b1b" }}>{error}</p>
-          </div>
-        )}
+        {error && <div className="error-box">{error}</div>}
 
-        {/* Seat map */}
         <div style={{ background: "#fff", border: "1px solid #e2e2e2", borderRadius: 14, padding: "28px", marginBottom: 16 }}>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20, flexWrap: "wrap", gap: 12 }}>
-            <p className="section-label">Coach Layout · [LB: Lower, MB: Middle, UB: Upper]</p>
-            <div style={{ display: "flex", gap: 12 }}>
-              <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                <div className="seat-available rounded" style={{ width: 14, height: 14 }} />
-                <span style={{ fontSize: "0.75rem", color: "#6b6b6b" }}>Free</span>
-              </div>
-              <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                <div className="seat-booked rounded" style={{ width: 14, height: 14 }} />
-                <span style={{ fontSize: "0.75rem", color: "#6b6b6b" }}>Booked</span>
-              </div>
-            </div>
-          </div>
-
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(58px, 1fr))", gap: 10 }}>
+          <p className="section-label" style={{ marginBottom: 20 }}>Select your seats</p>
+          
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(62px, 1fr))", gap: 12 }}>
             {train?.seats?.map(seat => {
+              const isSelected = selectedSeats.includes(seat.seat_number);
+              const isAvailable = seat.status === "available" || seat.status === "open";
               const b = seat.berth_type || "Lower";
               const label = b === "Lower" ? "LB" : b === "Middle" ? "MB" : "UB";
+              
               return (
                 <div
                   key={seat.seat_number}
-                  className={`seat-${seat.status} rounded`}
-                  style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "10px 4px", fontSize: "0.75rem", fontFamily: "Space Grotesk, sans-serif", fontWeight: 600, border: "1px solid #f0f0f0" }}
+                  onClick={() => toggleSeat(seat)}
+                  style={{
+                    display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
+                    padding: "12px 4px", fontSize: "0.75rem", fontFamily: "Space Grotesk, sans-serif", fontWeight: 700,
+                    borderRadius: 8, cursor: isAvailable ? "pointer" : "not-allowed",
+                    background: isSelected ? "#0a0a0a" : isAvailable ? "#f9f9f9" : "#f0f0f0",
+                    color: isSelected ? "#fff" : isAvailable ? "#0a0a0a" : "#a0a0a0",
+                    border: isSelected ? "1px solid #0a0a0a" : "1px solid #e2e2e2",
+                    transition: "all 0.1s"
+                  }}
                 >
-                  <span style={{ fontSize: "0.6rem", opacity: 0.5, marginBottom: 2 }}>{label}</span>
+                  <span style={{ fontSize: "0.55rem", opacity: isSelected ? 0.6 : 0.4, marginBottom: 2 }}>{label}</span>
                   <span>{seat.seat_number}</span>
                 </div>
               );
             })}
           </div>
+          
+          <div style={{ marginTop: 24, display: "flex", gap: 20 }}>
+            <LegendItem color="#f9f9f9" label="Free" />
+            <LegendItem color="#0a0a0a" label="Selected" />
+            <LegendItem color="#f0f0f0" label="Booked" />
+          </div>
         </div>
 
-        {/* Book action */}
         <div style={{ background: "#fff", border: "1px solid #e2e2e2", borderRadius: 14, padding: "24px 28px" }}>
           <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", justifyContent: "space-between", gap: 20 }}>
-            <div style={{ flex: 1, minWidth: 200 }}>
-              <label style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 600, fontSize: "0.85rem", color: "#0a0a0a", display: "block", marginBottom: 8 }}>Select Number of Seats</label>
-              <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-                <select
-                  value={seatCount}
-                  onChange={e => setSeatCount(parseInt(e.target.value))}
-                  style={{ padding: "8px 12px", borderRadius: 8, border: "1px solid #e2e2e2", fontFamily: "Inter, sans-serif", fontSize: "0.9rem", outline: "none", minWidth: 80 }}
-                >
-                  {[1, 2, 3, 4, 5, 6].map(n => (
-                    <option key={n} value={n} disabled={n > availableCount}>{n} Seat{n > 1 ? 's' : ''}</option>
-                  ))}
-                </select>
-                <p style={{ fontFamily: "Inter, sans-serif", fontSize: "0.8rem", color: "#6b6b6b" }}>
-                  Total: ₹{totalPrice.toLocaleString()}
-                </p>
-              </div>
+            <div>
+              <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 700, fontSize: "1rem", color: "#0a0a0a", marginBottom: 4 }}>
+                {selectedSeats.length > 0 ? `${selectedSeats.length} Seats Selected` : "Select your seats"}
+              </p>
+              <p style={{ fontFamily: "Inter, sans-serif", fontSize: "0.85rem", color: "#6b6b6b" }}>
+                {selectedSeats.length > 0 ? `Total Price: ₹${totalPrice.toLocaleString()}` : "Click on available seats to add them"}
+              </p>
             </div>
             <button
               onClick={handleBookClick}
-              disabled={booking || availableCount === 0}
+              disabled={booking || selectedSeats.length === 0}
               className="btn btn-primary"
-              style={{ padding: "0.8rem 2.5rem", fontSize: "0.9rem", minWidth: 200 }}
+              style={{ padding: "0.85rem 3rem", minWidth: 200 }}
             >
-              {booking
-                ? <span style={{ display: "inline-block", width: 18, height: 18, border: "2px solid #fff", borderTopColor: "transparent", borderRadius: "50%", animation: "spin 0.7s linear infinite" }} />
-                : availableCount > 0 ? `Pay & Book Now` : "No Seats Available"
-              }
+              {booking ? <div className="spinner-small" /> : "Book Selected →"}
             </button>
           </div>
         </div>
       </div>
-      <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
+    </div>
+  );
+}
+
+function LegendItem({ color, label }) {
+  return (
+    <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+      <div style={{ width: 12, height: 12, background: color, borderRadius: 3, border: "1px solid #e2e2e2" }} />
+      <span style={{ fontSize: "0.75rem", color: "#6b6b6b", fontFamily: "Inter, sans-serif" }}>{label}</span>
     </div>
   );
 }

@@ -8,24 +8,29 @@ const User = require("../models/User");
 // BOOK TICKET
 router.post("/book", async (req, res) => {
   try {
-    const { user_id, train_id, seat_count = 1 } = req.body;
+    const { user_id, train_id, selected_seats = [] } = req.body;
     const train = await Train.findById(train_id);
     if (!train) return res.status(404).json({ error: "Train not found" });
 
-    const availableSeats = train.seats.filter(s => s.status === "available" || s.status === "open").slice(0, seat_count);
-    
-    if (availableSeats.length < seat_count) {
-      return res.status(400).json({ error: `Only ${availableSeats.length} seats available.` });
+    // Handle array of seats
+    if (!Array.isArray(selected_seats) || selected_seats.length === 0) {
+      return res.status(400).json({ error: "No seats selected." });
     }
 
     const bookedTickets = [];
-    for (const seat of availableSeats) {
+    for (const seatNum of selected_seats) {
+      const seat = train.seats.find(s => s.seat_number === seatNum);
+      
+      if (!seat || (seat.status !== "available" && seat.status !== "open")) {
+        return res.status(400).json({ error: `Seat #${seatNum} is no longer available.` });
+      }
+
       seat.status = "booked";
       const ticket = new Ticket({ 
         user_id, 
         train_id, 
         seat_number: seat.seat_number, 
-        berth_type: seat.berth_type, // Store berth in ticket
+        berth_type: seat.berth_type,
         status: "confirmed" 
       });
       await ticket.save();
@@ -33,7 +38,7 @@ router.post("/book", async (req, res) => {
     }
 
     await train.save();
-    res.json({ message: `${seat_count} seats booked successfully`, tickets: bookedTickets });
+    res.json({ message: `${selected_seats.length} seats booked successfully`, tickets: bookedTickets });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

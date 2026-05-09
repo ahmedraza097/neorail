@@ -24,8 +24,8 @@ export const searchTrains = (from, to) =>
   api.get("/trains/search", { params: { from, to } });
 
 // TICKETS
-export const bookTicket = (user_id, train_id, seat_count = 1) =>
-  api.post("/tickets/book", { user_id, train_id, seat_count });
+export const bookTicket = (user_id, train_id, selected_seats = []) =>
+  api.post("/tickets/book", { user_id, train_id, selected_seats });
 export const getUserTickets = (userId) =>
   api.get(`/tickets/user/${userId}`);
 export const confirmSeat = (user_id, train_id) =>
