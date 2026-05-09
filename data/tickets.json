@@ -52,5 +52,32 @@
     "status": "confirmed",
     "_id": "24095dad-f986-4a81-a29e-bdf8a3f2a5b5",
     "createdAt": "2026-05-09T07:05:27.772Z"
+  },
+  {
+    "user_id": "1567d62f-db82-4d0e-9bee-a133e04f6838",
+    "train_id": "a0e2a254-5dca-49b4-8abf-4d99f7051bb5",
+    "seat_number": 7,
+    "berth_type": "Lower",
+    "status": "confirmed",
+    "_id": "c14990bd-89d4-43b3-93bf-78d7d57dbd75",
+    "createdAt": "2026-05-09T07:33:14.426Z"
+  },
+  {
+    "user_id": "1567d62f-db82-4d0e-9bee-a133e04f6838",
+    "train_id": "a0e2a254-5dca-49b4-8abf-4d99f7051bb5",
+    "seat_number": 8,
+    "berth_type": "Middle",
+    "status": "confirmed",
+    "_id": "b2045e76-641a-42f4-b2b5-dba36e5d423a",
+    "createdAt": "2026-05-09T07:33:14.426Z"
+  },
+  {
+    "user_id": "1567d62f-db82-4d0e-9bee-a133e04f6838",
+    "train_id": "a0e2a254-5dca-49b4-8abf-4d99f7051bb5",
+    "seat_number": 9,
+    "berth_type": "Upper",
+    "status": "confirmed",
+    "_id": "fe70e955-941f-4b17-9745-f9a4fba4c85e",
+    "createdAt": "2026-05-09T07:33:14.427Z"
   }
 ]

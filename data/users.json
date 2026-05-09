@@ -21,5 +21,12 @@
     "password": "1234",
     "_id": "a12dffab-49a6-46b5-b1a6-304d41f7a7fe",
     "createdAt": "2026-05-09T06:59:12.113Z"
+  },
+  {
+    "name": "shagun",
+    "email": "shaguntopper",
+    "password": "1234",
+    "_id": "1567d62f-db82-4d0e-9bee-a133e04f6838",
+    "createdAt": "2026-05-09T07:32:43.409Z"
   }
 ]
