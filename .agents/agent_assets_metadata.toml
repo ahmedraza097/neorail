@@ -1,0 +1,8 @@
+uploads = []
+generated = []
+
+[[outputs]]
+id = "mpnPp0G5NMvnPWcnvtGA9"
+uri = "file://neorail-project.zip"
+type = "unspecified"
+title = "NeoRail — With Admin + TTE (178 KB)"
