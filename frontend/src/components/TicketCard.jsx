@@ -46,7 +46,10 @@ export default function TicketCard({ ticket }) {
           <InfoItem label="Departs" value={train?.departure_time || "—"} />
           <InfoItem label="Arrives" value={train?.arrival_time || "—"} />
           {seat_number && (
-            <InfoItem label="Seat No." value={`#${seat_number}`} bold />
+            <div style={{ display: "flex", gap: 12 }}>
+              <InfoItem label="Seat No." value={`#${seat_number}`} bold />
+              {ticket.berth_type && <InfoItem label="Berth" value={ticket.berth_type} />}
+            </div>
           )}
         </div>
       </div>
