@@ -21,22 +21,22 @@
       },
       {
         "seat_number": 3,
-        "status": "available",
+        "status": "booked",
         "berth_type": "Upper"
       },
       {
         "seat_number": 4,
-        "status": "available",
+        "status": "booked",
         "berth_type": "Lower"
       },
       {
         "seat_number": 5,
-        "status": "available",
+        "status": "booked",
         "berth_type": "Middle"
       },
       {
         "seat_number": 6,
-        "status": "available",
+        "status": "booked",
         "berth_type": "Upper"
       },
       {
