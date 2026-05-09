@@ -2,47 +2,17 @@
   {
     "name": "admin",
     "email": "admin",
-    "password": "1234",
+    "password": "admin123",
     "role": "admin",
-    "_id": "4017ac03-39d8-4860-bb53-e2cd0ad20a72",
-    "createdAt": "2026-05-09T05:05:23.267Z"
+    "_id": "8f3303b7-a4e8-43ee-b8e7-7fa3e08f6ed6",
+    "createdAt": "2026-05-09T05:51:47.215Z"
   },
   {
     "name": "tte",
     "email": "tte",
     "password": "tte123",
     "role": "tte",
-    "_id": "6673c83d-059b-47c6-a03a-8a288b34f75f",
-    "createdAt": "2026-05-09T05:05:23.268Z"
-  },
-  {
-    "name": "Admin",
-    "email": "admin@neorail.io",
-    "password": "admin123",
-    "role": "admin",
-    "_id": "b6265d0d-5e53-42f9-bd2d-cc4e5cd170cb",
-    "createdAt": "2026-05-09T05:05:23.268Z"
-  },
-  {
-    "name": "TTE Officer",
-    "email": "tte@neorail.io",
-    "password": "tte123",
-    "role": "tte",
-    "_id": "86c79c27-5940-4331-943b-ad8fa266130c",
-    "createdAt": "2026-05-09T05:05:23.269Z"
-  },
-  {
-    "name": "AhmedRaza Aejaz Sayyed",
-    "email": "ahmedraza0169s@gmail.com",
-    "password": "1234",
-    "_id": "79168c42-8cda-410e-8858-0b0f3d7214e4",
-    "createdAt": "2026-05-09T05:15:58.057Z"
-  },
-  {
-    "name": "AhmedRaza Aejaz Sayyed",
-    "email": "admin@123.com",
-    "password": "1234",
-    "_id": "c9617e6c-4b33-4bf5-9f71-da8334047666",
-    "createdAt": "2026-05-09T05:32:26.030Z"
+    "_id": "c2d2f26a-0e5c-4b8b-8778-3917f3086f20",
+    "createdAt": "2026-05-09T05:51:47.216Z"
   }
 ]

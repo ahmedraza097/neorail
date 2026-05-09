@@ -8,21 +8,32 @@ const User = require("../models/User");
 // BOOK TICKET
 router.post("/book", async (req, res) => {
   try {
-    const { user_id, train_id } = req.body;
+    const { user_id, train_id, seat_count = 1 } = req.body;
     const train = await Train.findById(train_id);
     if (!train) return res.status(404).json({ error: "Train not found" });
 
-    const availableSeat = train.seats.find(s => s.status === "available" || s.status === "open");
-    let ticket;
-    if (availableSeat) {
-      availableSeat.status = "booked";
-      ticket = new Ticket({ user_id, train_id, seat_number: availableSeat.seat_number, status: "confirmed" });
-    } else {
-      ticket = new Ticket({ user_id, train_id, status: "waiting" });
+    const availableSeats = train.seats.filter(s => s.status === "available" || s.status === "open").slice(0, seat_count);
+    
+    if (availableSeats.length < seat_count) {
+      return res.status(400).json({ error: `Only ${availableSeats.length} seats available.` });
     }
+
+    const bookedTickets = [];
+    for (const seat of availableSeats) {
+      seat.status = "booked";
+      const ticket = new Ticket({ 
+        user_id, 
+        train_id, 
+        seat_number: seat.seat_number, 
+        berth_type: seat.berth_type, // Store berth in ticket
+        status: "confirmed" 
+      });
+      await ticket.save();
+      bookedTickets.push(ticket);
+    }
+
     await train.save();
-    await ticket.save();
-    res.json({ message: "Ticket booked", ticket });
+    res.json({ message: `${seat_count} seats booked successfully`, tickets: bookedTickets });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -37,7 +48,7 @@ router.get("/user/:userId", async (req, res) => {
       const user = await User.findById(ticket.user_id).select("-password");
       return {
         _id: ticket._id, user_id: ticket.user_id, train_id: ticket.train_id,
-        seat_number: ticket.seat_number, status: ticket.status,
+        seat_number: ticket.seat_number, berth_type: ticket.berth_type, status: ticket.status,
         user: user ? { name: user.name, email: user.email } : null,
         train: train ? { train_name: train.train_name, train_number: train.train_number, from_station: train.from_station, to_station: train.to_station, departure_time: train.departure_time, arrival_time: train.arrival_time, price_per_seat: train.price_per_seat } : null
       };
@@ -57,7 +68,7 @@ router.get("/all", async (req, res) => {
       const user = await User.findById(ticket.user_id).select("-password");
       return {
         _id: ticket._id, user_id: ticket.user_id, train_id: ticket.train_id,
-        seat_number: ticket.seat_number, status: ticket.status,
+        seat_number: ticket.seat_number, berth_type: ticket.berth_type, status: ticket.status,
         user: user ? { name: user.name, email: user.email } : null,
         train: train ? { train_name: train.train_name, train_number: train.train_number, from_station: train.from_station, to_station: train.to_station } : null
       };
@@ -75,7 +86,7 @@ router.get("/train/:trainId", async (req, res) => {
     const enriched = await Promise.all(tickets.map(async ticket => {
       const user = await User.findById(ticket.user_id).select("-password");
       return {
-        _id: ticket._id, seat_number: ticket.seat_number, status: ticket.status,
+        _id: ticket._id, seat_number: ticket.seat_number, berth_type: ticket.berth_type, status: ticket.status,
         user: user ? { name: user.name, email: user.email } : null
       };
     }));

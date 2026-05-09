@@ -25,7 +25,13 @@ async function seed() {
     const existingCount = await Train.countDocuments();
     if (existingCount === 0) {
       for (const t of sampleTrains) {
-        const seats = Array.from({ length: t.total_seats }, (_, i) => ({ seat_number: i + 1, status: "available" }));
+        const seats = Array.from({ length: t.total_seats }, (_, i) => {
+          const seatNum = i + 1;
+          let berth = "Lower";
+          if (seatNum % 3 === 2) berth = "Middle";
+          if (seatNum % 3 === 0) berth = "Upper";
+          return { seat_number: seatNum, status: "available", berth_type: berth };
+        });
         await Train.create({ ...t, seats });
         console.log(`Added train: ${t.train_name}`);
       }
