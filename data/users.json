@@ -14,5 +14,12 @@
     "role": "tte",
     "_id": "c2d2f26a-0e5c-4b8b-8778-3917f3086f20",
     "createdAt": "2026-05-09T05:51:47.216Z"
+  },
+  {
+    "name": "AhmedRaza Aejaz Sayyed",
+    "email": "ahmedraza0169s@gmail.com",
+    "password": "1234",
+    "_id": "a12dffab-49a6-46b5-b1a6-304d41f7a7fe",
+    "createdAt": "2026-05-09T06:59:12.113Z"
   }
 ]

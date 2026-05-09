@@ -7,7 +7,7 @@ import { useAuth } from "../context/AuthContext";
 /* ─── Payment Modal ─────────────────────────────────────── */
 /* ─── Payment Modal ─────────────────────────────────────── */
 function PaymentModal({ train, selectedSeats, onClose, onSuccess }) {
-  const [card, setCard] = useState({ number: "", name: "", expiry: "", cvv: "" });
+  const [card, setCard] = useState({ number: "", expiry: "", cvv: "" });
   const [errors, setErrors] = useState({});
   const [step, setStep] = useState("form");
 
@@ -29,10 +29,9 @@ function PaymentModal({ train, selectedSeats, onClose, onSuccess }) {
 
   const validate = () => {
     const e = {};
-    if (card.number.replace(/\s/g, "").length < 16) e.number = "Enter a valid 16-digit card number";
-    if (!card.name.trim()) e.name = "Enter cardholder name";
-    if (!/^\d{2}\/\d{2}$/.test(card.expiry)) e.expiry = "Enter expiry as MM/YY";
-    if (card.cvv.length < 3) e.cvv = "Enter 3-digit CVV";
+    if (card.number.replace(/\s/g, "").length < 16) e.number = "Invalid card";
+    if (!/^\d{2}\/\d{2}$/.test(card.expiry)) e.expiry = "MM/YY";
+    if (card.cvv.length < 3) e.cvv = "CVV";
     setErrors(e);
     return Object.keys(e).length === 0;
   };
@@ -103,15 +102,18 @@ function PaymentModal({ train, selectedSeats, onClose, onSuccess }) {
                 <div>
                   <label className="label">Card Number</label>
                   <input className="input" name="number" placeholder="1234 5678 9012 3456" value={card.number} onChange={fmt} style={{ fontFamily: "Inter, sans-serif", letterSpacing: "0.08em" }} />
+                  {errors.number && <p style={{ fontSize: "0.7rem", color: "#e74c3c", marginTop: 4 }}>{errors.number}</p>}
                 </div>
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
                   <div>
                     <label className="label">Expiry</label>
                     <input className="input" name="expiry" placeholder="MM/YY" value={card.expiry} onChange={fmt} />
+                    {errors.expiry && <p style={{ fontSize: "0.7rem", color: "#e74c3c", marginTop: 4 }}>{errors.expiry}</p>}
                   </div>
                   <div>
                     <label className="label">CVV</label>
                     <input className="input" name="cvv" placeholder="•••" type="password" value={card.cvv} onChange={fmt} />
+                    {errors.cvv && <p style={{ fontSize: "0.7rem", color: "#e74c3c", marginTop: 4 }}>{errors.cvv}</p>}
                   </div>
                 </div>
               </div>

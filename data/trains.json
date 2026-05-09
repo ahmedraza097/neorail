@@ -11,12 +11,12 @@
     "seats": [
       {
         "seat_number": 1,
-        "status": "available",
+        "status": "booked",
         "berth_type": "Lower"
       },
       {
         "seat_number": 2,
-        "status": "available",
+        "status": "booked",
         "berth_type": "Middle"
       },
       {
